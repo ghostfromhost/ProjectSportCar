@@ -1,4 +1,5 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace ProjectSportCar;
 
@@ -12,30 +13,16 @@ public class DrawningCar
     private int? _startPosY;
 
     // Размеры прорисовки самолёта (не более 150x150)
-    private readonly int _drawningCarWidth = 120;
-    private readonly int _drawningCarHeight = 60;
+    private readonly int _drawningCarWidth = 140;
+    private readonly int _drawningCarHeight = 80;
 
-    /// <summary>Левая координата</summary>
     public int? PosX => _startPosX;
-
-    /// <summary>Верхняя координата</summary>
     public int? PosY => _startPosY;
-
-    /// <summary>Шаг перемещения</summary>
     public double? CarStep => _entityCar?.Step;
-
-    /// <summary>Ширина самолёта</summary>
     public int DrawningCarWidth => _drawningCarWidth;
-
-    /// <summary>Высота самолёта</summary>
     public int DrawningCarHeight => _drawningCarHeight;
-
-    /// <summary>Количество двигателей</summary>
     public int? EngineCount => _entityCar?.EngineCount;
 
-    /// <summary>
-    /// Инициализация свойств
-    /// </summary>
     public void Init(int speed, double weight, Color bodyColor, int engineCount)
     {
         _entityCar = new EntityCar();
@@ -44,44 +31,36 @@ public class DrawningCar
         _startPosY = null;
     }
 
-    /// <summary>Установка позиции</summary>
     public void SetPosition(int x, int y)
     {
         _startPosX = x;
         _startPosY = y;
     }
 
-    /// <summary>Сдвиг влево</summary>
     public void MoveLeft()
     {
         if (_entityCar is null || !_startPosX.HasValue) return;
         _startPosX -= (int)_entityCar.Step;
     }
 
-    /// <summary>Сдвиг вправо</summary>
     public void MoveRight()
     {
         if (_entityCar is null || !_startPosX.HasValue) return;
         _startPosX += (int)_entityCar.Step;
     }
 
-    /// <summary>Сдвиг вверх</summary>
     public void MoveUp()
     {
         if (_entityCar is null || !_startPosY.HasValue) return;
         _startPosY -= (int)_entityCar.Step;
     }
 
-    /// <summary>Сдвиг вниз</summary>
     public void MoveDown()
     {
         if (_entityCar is null || !_startPosY.HasValue) return;
         _startPosY += (int)_entityCar.Step;
     }
 
-    /// <summary>
-    /// Прорисовка бомбардировщика (вид сбоку)
-    /// </summary>
     public void DrawTransport(Graphics g)
     {
         if (_entityCar is null || !_startPosX.HasValue || !_startPosY.HasValue)
@@ -96,11 +75,10 @@ public class DrawningCar
         using Brush bodyBrush = new SolidBrush(bodyColor);
         using Brush cockpitBrush = new SolidBrush(Color.LightBlue);
         using Brush engineBrush = new SolidBrush(Color.DarkGray);
-        using Brush tankBrush = new SolidBrush(Color.LightSteelBlue); // для топливных баков
+        using Brush tankBrush = new SolidBrush(Color.LightSteelBlue);
 
         int fuselageLength = 120;
         int fuselageWidth = 24;
-
         int top = y;
         int bottom = y + fuselageWidth;
         int centerY = y + fuselageWidth / 2;
@@ -110,27 +88,12 @@ public class DrawningCar
         g.FillEllipse(bodyBrush, fuselage);
         g.DrawEllipse(pen, fuselage);
 
-        // ---------- ДВИГАТЕЛИ (под крыльями, рисуем до крыльев) ----------
+        // ---------- ТОПЛИВНЫЕ БАКИ (под крыльями) ----------
         int wingRoot = x + 70; // точка крепления крыльев
 
-        // Двигатель под левым (верхним) крылом
-        int leftEngineX = wingRoot - 6;
-        int leftEngineY = top - 22;
-        Rectangle leftEngine = new Rectangle(leftEngineX - 7, leftEngineY - 5, 14, 10);
-        g.FillEllipse(engineBrush, leftEngine);
-        g.DrawEllipse(pen, leftEngine);
-
-        // Двигатель под правым (нижним) крылом
-        int rightEngineX = wingRoot - 6;
-        int rightEngineY = bottom + 22;
-        Rectangle rightEngine = new Rectangle(rightEngineX - 7, rightEngineY - 5, 14, 10);
-        g.FillEllipse(engineBrush, rightEngine);
-        g.DrawEllipse(pen, rightEngine);
-
-        // ---------- ТОПЛИВНЫЕ БАКИ (под крыльями, вытянутые по горизонтали) ----------
         // Бак под левым крылом
-        int leftTankX = wingRoot - 10;          // центр бака по X
-        int leftTankY = top - 9;               // чуть ниже двигателя, под крылом
+        int leftTankX = wingRoot - 10;
+        int leftTankY = top - 9;
         Rectangle leftTank = new Rectangle(leftTankX - 18, leftTankY - 5, 36, 10);
         g.FillEllipse(tankBrush, leftTank);
         g.DrawEllipse(pen, leftTank);
@@ -142,22 +105,61 @@ public class DrawningCar
         g.FillEllipse(tankBrush, rightTank);
         g.DrawEllipse(pen, rightTank);
 
-        // ---------- КРЫЛЬЯ (оба слева) ----------
-        Point[] leftWing =
+        // ---------- ДВИГАТЕЛИ (количество зависит от EngineCount) ----------
+        int enginesPerWing = _entityCar.EngineCount / 2; // 1, 2 или 3
+
+        // Диапазон двигателей от корня к законцовке: от wingRoot-8 (корень) до wingRoot-22 (законцовка)
+        int leftEngineStartX = wingRoot - 10;      // корень (ближе к фюзеляжу)
+        int leftEngineEndX = wingRoot - 17;       // законцовка (дальше от фюзеляжа)
+        int leftEngineStartY = top - 25;
+        int leftEngineEndY = top - 55;
+
+        for (int i = 0; i < enginesPerWing; i++)
+        {
+            double t = (enginesPerWing == 1) ? 0.0 : (double)i / (enginesPerWing - 1);
+            // t = 0 соответствует корню, t = 1 – законцовке
+            int engineX = (int)(leftEngineStartX + t * (leftEngineEndX - leftEngineStartX));
+
+            int engineY = (int)(leftEngineStartY + t * (leftEngineEndY - leftEngineStartY));
+
+            Rectangle engine = new Rectangle(engineX, engineY, 12, 8);
+            g.FillEllipse(engineBrush, engine);
+            g.DrawEllipse(pen, engine);
+        }
+
+        int rightEngineStartX = wingRoot - 10;     // корень
+        int rightEngineEndX = wingRoot - 17;      // законцовка
+        int rightEngineStartY = bottom + 17;
+        int rightEngineEndY = bottom + 47;
+
+        for (int i = 0; i < enginesPerWing; i++)
+        {
+            double t = (enginesPerWing == 1) ? 0.0 : (double)i / (enginesPerWing - 1);
+            int engineX = (int)(rightEngineStartX + t * (rightEngineEndX - rightEngineStartX));
+
+            int engineY = (int)(rightEngineStartY + t * (rightEngineEndY - rightEngineStartY));
+
+            Rectangle engine = new Rectangle(engineX, engineY, 12, 8);
+            g.FillEllipse(engineBrush, engine);
+            g.DrawEllipse(pen, engine);
+        }
+
+        // ---------- КРЫЛЬЯ (оба слева, увеличенные) - СКОРРЕКТИРОВАНЫ ----------
+        Point[] leftWing = new Point[]
         {
         new Point(wingRoot, top),
-        new Point(wingRoot - 10, top - 45),
-        new Point(wingRoot - 25, top - 45),
-        new Point(wingRoot - 15, top)
-    };
+        new Point(wingRoot - 15, top - 60),
+        new Point(wingRoot - 35, top - 60),
+        new Point(wingRoot - 30, top)
+        };
 
-        Point[] rightWing =
+        Point[] rightWing = new Point[]
         {
         new Point(wingRoot, bottom),
-        new Point(wingRoot - 15, bottom),
-        new Point(wingRoot - 25, bottom + 45),
-        new Point(wingRoot - 10, bottom + 45)
-    };
+        new Point(wingRoot - 30, bottom),
+        new Point(wingRoot - 35, bottom + 60),
+        new Point(wingRoot - 15, bottom + 60)
+        };
 
         g.FillPolygon(bodyBrush, leftWing);
         g.DrawPolygon(pen, leftWing);
@@ -167,22 +169,21 @@ public class DrawningCar
 
         // ---------- ХВОСТ ----------
         int tailRoot = x + 20;
-
-        Point[] leftTail =
+        Point[] leftTail = new Point[]
         {
         new Point(tailRoot, top + 4),
         new Point(tailRoot - 5, top - 20),
         new Point(tailRoot - 15, top - 20),
         new Point(tailRoot - 10, top + 4)
-    };
+        };
 
-        Point[] rightTail =
+        Point[] rightTail = new Point[]
         {
         new Point(tailRoot, bottom - 4),
         new Point(tailRoot - 10, bottom - 4),
         new Point(tailRoot - 15, bottom + 20),
         new Point(tailRoot - 5, bottom + 20)
-    };
+        };
 
         g.FillPolygon(bodyBrush, leftTail);
         g.DrawPolygon(pen, leftTail);

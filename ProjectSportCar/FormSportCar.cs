@@ -40,6 +40,7 @@ public partial class FormSportCar : Form
 
         // Генерация количества двигателей: 2, 4 или 6
         int engineCount = random.Next(1, 4) * 2; // 2,4,6
+        System.Diagnostics.Debug.WriteLine($"Создан самолёт с {engineCount} двигателями");
 
         car.Init(
             random.Next(100, 300),

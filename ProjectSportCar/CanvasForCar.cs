@@ -141,7 +141,7 @@ public class CanvasForCar
 		}
 
 		Bitmap bmp = new(_canvasWidth.Value, _canvasHeight.Value);
-		Graphics graphics = Graphics.FromImage(bmp);
+		using Graphics graphics = Graphics.FromImage(bmp);
 		_drawningCar?.DrawTransport(graphics);
 		return bmp;
 	}

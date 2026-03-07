@@ -23,17 +23,22 @@ public partial class FormSportCar : Form
 		_checkBordersState = DirectionType.None;
 	}
 
-	/// <summary>
-	/// ����� ���������� ������
-	/// </summary>
-	private void Draw() => pictureBoxSportCar.Image = _canvas.DrawCanvas();
+    /// <summary>
+    /// ����� ���������� ������
+    /// </summary>
+    private void Draw()
+    {
+        Image? oldImage = pictureBoxSportCar.Image;          // сохраняем ссылку на старое изображение
+        pictureBoxSportCar.Image = _canvas.DrawCanvas();     // устанавливаем новое
+        oldImage?.Dispose();                                  // освобождаем ресурсы старого
+    }
 
-	/// <summary>
-	/// ��������� ������� ������ "�������"
-	/// </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void ButtonCreateCar_Click(object sender, EventArgs e)
+    /// <summary>
+    /// ��������� ������� ������ "�������"
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ButtonCreateCar_Click(object sender, EventArgs e)
 	{
         Random random = new();
         DrawningCar car = new();

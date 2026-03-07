@@ -1,4 +1,4 @@
-﻿namespace ProjectSportCar
+namespace ProjectSportCar
 {
     internal static class Program
     {

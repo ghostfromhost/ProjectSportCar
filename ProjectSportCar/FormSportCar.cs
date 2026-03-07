@@ -1,19 +1,27 @@
-п»їnamespace ProjectSportCar;
+using ProjectSportCar.Drawnings;
+using ProjectSportCar.MovementTemplate;
+
+namespace ProjectSportCar;
 
 public partial class FormSportCar : Form
 {
 	/// <summary>
-	/// пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	/// Поле-объект полотно
 	/// </summary>
 	private readonly CanvasForCar _canvas;
 
 	/// <summary>
-	/// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	/// Поле для фиксации состояния для следующего шага проверки выхода за границы
 	/// </summary>
 	private DirectionType _checkBordersState;
 
 	/// <summary>
-	/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+	/// Шаблон перемещения
+	/// </summary>
+	private BaseTemplateMovement? _templateMovement;
+
+	/// <summary>
+	/// Инициализация формы
 	/// </summary>
 	public FormSportCar()
 	{
@@ -21,48 +29,59 @@ public partial class FormSportCar : Form
 		_canvas = new CanvasForCar();
 		_canvas.SetPictureSize(pictureBoxSportCar.Width, pictureBoxSportCar.Height);
 		_checkBordersState = DirectionType.None;
+		_templateMovement = null;
 	}
 
-    /// <summary>
-    /// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-    /// </summary>
-    private void Draw()
-    {
-        Image? oldImage = pictureBoxSportCar.Image;          // СЃРѕС…СЂР°РЅСЏРµРј СЃСЃС‹Р»РєСѓ РЅР° СЃС‚Р°СЂРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ
-        pictureBoxSportCar.Image = _canvas.DrawCanvas();     // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅРѕРІРѕРµ
-        oldImage?.Dispose();                                  // РѕСЃРІРѕР±РѕР¶РґР°РµРј СЂРµСЃСѓСЂСЃС‹ СЃС‚Р°СЂРѕРіРѕ
-    }
-
-    /// <summary>
-    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void ButtonCreateCar_Click(object sender, EventArgs e)
-	{
-        Random random = new();
-        DrawningCar car = new();
-
-        // Р“РµРЅРµСЂР°С†РёСЏ РєРѕР»РёС‡РµСЃС‚РІР° РґРІРёРіР°С‚РµР»РµР№: 2, 4 РёР»Рё 6
-        int engineCount = random.Next(1, 4) * 2; // 2,4,6
-        System.Diagnostics.Debug.WriteLine($"РЎРѕР·РґР°РЅ СЃР°РјРѕР»С‘С‚ СЃ {engineCount} РґРІРёРіР°С‚РµР»СЏРјРё");
-
-        car.Init(
-            random.Next(100, 300),
-            random.Next(1000, 3000),
-            Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)),
-            engineCount
-        );
-
-        if (_canvas.InsertCar(car))
-        {
-            _canvas.SetCarPosition(random.Next(10, 100), random.Next(10, 100));
-            Draw();
-        }
-    }
+	/// <summary>
+	/// Метод прорисовки машины
+	/// </summary>
+	private void Draw() => pictureBoxSportCar.Image = _canvas.DrawCanvas();
 
 	/// <summary>
-	/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
+	/// Обработка нажатия кнопки "Создать автомобиль"
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	private void ButtonCreateCar_Click(object sender, EventArgs e) => CreateObject(nameof(DrawningCar));
+
+	/// <summary>
+	/// Обработка нажатия кнопки "Создать спортивный автомобиль"
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	private void ButtonCreateSportCar_Click(object sender, EventArgs e) => CreateObject(nameof(DrawningSportCar));
+
+	/// <summary>
+	/// Создание объекта класса-перемещения
+	/// </summary>
+	/// <param name="type">Тип создаваемого объекта</param>
+	private void CreateObject(string type)
+	{
+		Random random = new();
+		DrawningCar? drawningCar = null;
+		switch (type)
+		{
+			case nameof(DrawningCar):
+				drawningCar = new DrawningCar(random.Next(100, 300), random.Next(1000, 3000), Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)));
+				break;
+			case nameof(DrawningSportCar):
+				drawningCar = new DrawningSportCar(random.Next(100, 300), random.Next(1000, 3000), Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), Convert.ToBoolean(random.Next(0, 2)), Convert.ToBoolean(random.Next(0, 2)), Convert.ToBoolean(random.Next(0, 2)));
+				break;
+			default:
+				return;
+		}
+
+		if (_canvas.InsertCar(drawningCar))
+		{
+			_canvas.SetCarPosition(random.Next(10, 100), random.Next(10, 100));
+			comboBoxPointOfDestination.Enabled = true;
+			comboBoxPointOfDestination.SelectedIndex = -1;
+			Draw();
+		}
+	}
+
+	/// <summary>
+	/// Перемещение объекта по форме (нажатие кнопок навигации)
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
@@ -93,7 +112,7 @@ public partial class FormSportCar : Form
 	}
 
 	/// <summary>
-	/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	/// Проверка, что объект не выходит за границы при неверно заданных координатах
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
@@ -119,6 +138,56 @@ public partial class FormSportCar : Form
 				_canvas.SetCarPosition(random.Next(10, 100), random.Next(10, 100) + pictureBoxSportCar.Height);
 				_checkBordersState = DirectionType.Down;
 				break;
+		}
+
+		Draw();
+	}
+
+	/// <summary>
+	/// Обработка выбора элемента из выпадающего списка
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	private void ComboBoxPointOfDestination_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		if (_canvas is null || _canvas.DrawningCar is null)
+		{
+			return;
+		}
+
+		_templateMovement = comboBoxPointOfDestination.SelectedIndex switch
+		{
+			0 => new MoveToCenter(),
+			1 => new MoveToRightDownBorder(),
+			_ => null,
+		};
+
+		if (_templateMovement is null)
+		{
+			return;
+		}
+
+		_templateMovement.SetData(new MoveableAdapterCar(_canvas.DrawningCar), pictureBoxSportCar.Width, pictureBoxSportCar.Height);
+		comboBoxPointOfDestination.Enabled = false;
+	}
+
+	/// <summary>
+	/// Выполнение шага перемещения
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	private void ButtonMovementStep_Click(object sender, EventArgs e)
+	{
+		if (_templateMovement is null)
+		{
+			return;
+		}
+
+		_templateMovement.MakeStep();
+		if (_templateMovement.IsFinishReached)
+		{
+			comboBoxPointOfDestination.Enabled = true;
+			comboBoxPointOfDestination.SelectedIndex = -1;
 		}
 
 		Draw();

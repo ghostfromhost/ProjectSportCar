@@ -18,6 +18,20 @@ public partial class FormBomber : Form
         _templateMovement = null;
     }
 
+    public void SetBomber(DrawningBomber bomber) => InsertBomberObject(bomber);
+
+    private void InsertBomberObject(DrawningBomber bomber, Random? random = null)
+    {
+        random ??= new();
+        if (_canvas.InsertBomber(bomber))
+        {
+            _canvas.SetCarPosition(random.Next(10, 100), random.Next(10, 100));
+            comboBoxPointOfDestination.Enabled = true;
+            comboBoxPointOfDestination.SelectedIndex = -1;
+            Draw();
+        }
+    }
+
     private void Draw()
     {
         Image? oldImage = pictureBoxSportCar.Image;
@@ -56,7 +70,7 @@ public partial class FormBomber : Form
                 break;
         }
 
-        if (bomber != null && _canvas.InsertCar(bomber))
+        if (bomber != null && _canvas.InsertBomber(bomber))
         {
             _canvas.SetCarPosition(random.Next(10, 100), random.Next(10, 100));
             comboBoxPointOfDestination.Enabled = true;

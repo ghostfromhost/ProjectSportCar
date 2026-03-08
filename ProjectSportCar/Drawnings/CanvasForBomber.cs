@@ -17,7 +17,7 @@ public class CanvasForBomber
         _canvasHeight = height;
     }
 
-    public bool InsertCar(DrawningBomber bomber)
+    public bool InsertBomber(DrawningBomber bomber)
     {
         if (!_canvasWidth.HasValue || !_canvasHeight.HasValue)
             return false;

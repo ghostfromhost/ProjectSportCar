@@ -1,6 +1,6 @@
 ﻿namespace ProjectSportCar
 {
-    partial class FormSportCar
+    partial class FormBomber
     {
         /// <summary>
         ///  Required designer variable.
@@ -29,13 +29,13 @@
 		private void InitializeComponent()
 		{
 			pictureBoxSportCar = new PictureBox();
-			buttonCreateCar = new Button();
+			buttonCreateBomber = new Button();
 			buttonLeft = new Button();
 			buttonUp = new Button();
 			buttonDown = new Button();
 			buttonRight = new Button();
 			buttonCheckBorders = new Button();
-			buttonCreateSportCar = new Button();
+			buttonCreateUpgradedBomber = new Button();
 			comboBoxPointOfDestination = new ComboBox();
 			buttonMovementStep = new Button();
 			((System.ComponentModel.ISupportInitialize)pictureBoxSportCar).BeginInit();
@@ -50,16 +50,16 @@
 			pictureBoxSportCar.TabIndex = 0;
 			pictureBoxSportCar.TabStop = false;
 			// 
-			// buttonCreateCar
+			// buttonCreateBomber
 			// 
-			buttonCreateCar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-			buttonCreateCar.Location = new Point(12, 562);
-			buttonCreateCar.Name = "buttonCreateCar";
-			buttonCreateCar.Size = new Size(156, 23);
-			buttonCreateCar.TabIndex = 1;
-			buttonCreateCar.Text = "Создать автомобиль";
-			buttonCreateCar.UseVisualStyleBackColor = true;
-			buttonCreateCar.Click += ButtonCreateCar_Click;
+			buttonCreateBomber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+			buttonCreateBomber.Location = new Point(12, 562);
+			buttonCreateBomber.Name = "buttonCreateUBomber";
+			buttonCreateBomber.Size = new Size(156, 23);
+			buttonCreateBomber.TabIndex = 1;
+			buttonCreateBomber.Text = "Создать бомбардировщик";
+			buttonCreateBomber.UseVisualStyleBackColor = true;
+			buttonCreateBomber.Click += ButtonCreateBomber_Click;
 			// 
 			// buttonLeft
 			// 
@@ -120,16 +120,16 @@
 			buttonCheckBorders.UseVisualStyleBackColor = true;
 			buttonCheckBorders.Click += ButtonCheckBorders_Click;
 			// 
-			// buttonCreateSportCar
+			// buttonCreateUpgradedBomber
 			// 
-			buttonCreateSportCar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-			buttonCreateSportCar.Location = new Point(174, 562);
-			buttonCreateSportCar.Name = "buttonCreateSportCar";
-			buttonCreateSportCar.Size = new Size(223, 23);
-			buttonCreateSportCar.TabIndex = 1;
-			buttonCreateSportCar.Text = "Создать спортивный автомобиль";
-			buttonCreateSportCar.UseVisualStyleBackColor = true;
-			buttonCreateSportCar.Click += ButtonCreateSportCar_Click;
+			buttonCreateUpgradedBomber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+			buttonCreateUpgradedBomber.Location = new Point(174, 562);
+			buttonCreateUpgradedBomber.Name = "buttonCreateUpgradedBomber";
+			buttonCreateUpgradedBomber.Size = new Size(223, 23);
+			buttonCreateUpgradedBomber.TabIndex = 1;
+			buttonCreateUpgradedBomber.Text = "Создать улучшенный бомбардировщик";
+			buttonCreateUpgradedBomber.UseVisualStyleBackColor = true;
+			buttonCreateUpgradedBomber.Click += ButtonCreateUpgradedBomber_Click;
 			// 
 			// comboBoxPointOfDestination
 			// 
@@ -159,13 +159,13 @@
 			ClientSize = new Size(923, 597);
 			Controls.Add(buttonMovementStep);
 			Controls.Add(comboBoxPointOfDestination);
-			Controls.Add(buttonCreateSportCar);
+			Controls.Add(buttonCreateUpgradedBomber);
 			Controls.Add(buttonCheckBorders);
 			Controls.Add(buttonRight);
 			Controls.Add(buttonDown);
 			Controls.Add(buttonUp);
 			Controls.Add(buttonLeft);
-			Controls.Add(buttonCreateCar);
+			Controls.Add(buttonCreateBomber);
 			Controls.Add(pictureBoxSportCar);
 			Name = "FormSportCar";
 			Text = "Спортивный автомобиль";
@@ -176,13 +176,13 @@
 		#endregion
 
 		private PictureBox pictureBoxSportCar;
-		private Button buttonCreateCar;
+		private Button buttonCreateBomber;
 		private Button buttonLeft;
 		private Button buttonUp;
 		private Button buttonDown;
 		private Button buttonRight;
 		private Button buttonCheckBorders;
-		private Button buttonCreateSportCar;
+		private Button buttonCreateUpgradedBomber;
 		private ComboBox comboBoxPointOfDestination;
 		private Button buttonMovementStep;
 	}
